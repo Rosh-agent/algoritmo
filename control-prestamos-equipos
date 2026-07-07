@@ -1,0 +1,276 @@
+total_prestamos = 0
+total_estudiantes = 0
+total_docentes = 0
+
+total_laptops = 0
+total_proyectores = 0
+total_tablets = 0
+total_camaras = 0
+
+total_horas = 0
+total_autorizaciones = 0
+
+ultimo_prestamo = {}
+ultimo_codigo = ""
+
+opcion = 0
+
+while opcion != 5:
+
+    print("\n========= SISTEMA DE PRÉSTAMOS DE EQUIPOS =========")
+    print("1. Registrar préstamo de equipo")
+    print("2. Ver resumen general de préstamos")
+    print("3. Consultar último préstamo registrado")
+    print("4. Analizar código de préstamo")
+    print("5. Salir")
+    try:
+        opcion = int(input("\nSeleccione una opción: "))
+    except ValueError:
+        print("Error: debe ingresar un número.")
+        opcion = 0
+
+    match opcion:
+        case 1:
+            print("\n--- REGISTRAR PRÉSTAMO ---")
+
+            nombre = input("Ingrese el nombre del solicitante: ").strip()
+            while nombre == "" or nombre.replace(" ", "").isalpha() == False:
+                print("Error: ingrese un nombre válido.")
+                nombre = input("Ingrese el nombre del solicitante: ").strip()
+            nombre = nombre.replace(" ", "").capitalize()
+
+            apellido = input("Ingrese el apellido del solicitante: ").strip()
+            while apellido == "" or apellido.replace(" ", "").isalpha() == False:
+                print("Error: ingrese un apellido válido.")
+                apellido = input(
+                    "Ingrese el apellido del solicitante: ").strip()
+            apellido = apellido.replace(" ", "").capitalize()
+
+            # validamos que se numero y tenga 10 digitos
+            cedula = input("Ingrese la cédula: ").strip()
+            while len(cedula) != 10 or not cedula.isdigit():
+                print(
+                    "\nError: la cedula debe tener 10 digitos y solo contener números.")
+                cedula = input("Ingrese la cédula: ").strip()
+
+            # validamos que el correo tenga @ y termine en .edu.ec
+            correo = input("Ingrese el correo institucional: ").strip(
+            ).lower().replace(" ", "")
+            while correo == "" or "@" not in correo or correo.endswith(".edu.ec") == False:
+                print("Error: el correo debe contener @ y terminar en .edu.ec")
+                correo = input(
+                    "Ingrese el correo institucional: ").strip().lower()
+
+            print("\nTipo de solicitante:")
+            print("1. Estudiante")
+            print("2. Docente")
+
+            tipo_solicitante_opcion = 0
+
+            while tipo_solicitante_opcion != 1 and tipo_solicitante_opcion != 2:
+                try:
+                    tipo_solicitante_opcion = int(
+                        input("Seleccione el tipo de solicitante: "))
+                    if tipo_solicitante_opcion != 1 and tipo_solicitante_opcion != 2:
+                        print("Error: opción no válida.")
+                except ValueError:
+                    print("Error: debe ingresar un número.")
+                    tipo_solicitante_opcion = 0
+
+            if tipo_solicitante_opcion == 1:
+                tipo_solicitante = "Estudiante"
+            else:
+                tipo_solicitante = "Docente"
+
+            print("\nTipo de equipo:")
+            print("1. Laptop")
+            print("2. Proyector")
+            print("3. Tablet")
+            print("4. Cámara")
+
+            equipo_opcion = 0
+            while equipo_opcion < 1 or equipo_opcion > 4:
+                try:
+                    equipo_opcion = int(
+                        input("Seleccione el tipo de equipo: "))
+                    if equipo_opcion < 1 or equipo_opcion > 4:
+                        print("Error: opción no válida.")
+                except ValueError:
+                    print("Error: debe ingresar un número.")
+                    equipo_opcion = 0
+
+            # case equipos prestamos
+            match equipo_opcion:
+                case 1:
+                    equipo = "Laptop"
+                case 2:
+                    equipo = "Proyector"
+                case 3:
+                    equipo = "Tablet"
+                case 4:
+                    equipo = "Cámara"
+
+            codigo_fisico = input(
+                "Ingrese el código físico del equipo: ").strip().upper()
+            codigo_fisico = codigo_fisico.replace(" ", "")
+
+            while len(codigo_fisico) < 5:
+                print("Error: el código físico debe tener mínimo 5 caracteres.")
+                codigo_fisico = input(
+                    "Ingrese el código físico del equipo: ").strip().upper()
+                codigo_fisico = codigo_fisico.replace(" ", "")
+
+            horas = 0
+
+            while horas <= 0 or horas > 8:
+                try:
+                    horas = int(
+                        input("Ingrese la cantidad de horas de préstamo: "))
+                    if horas <= 0:
+                        print("Error: las horas deben ser mayor que 0.")
+                    elif horas > 8:
+                        print("Error: el préstamo no puede superar las 8 horas.")
+                except ValueError:
+                    print("Error: debe ingresar un número entero.")
+                    horas = 0
+
+            if horas >= 1 and horas <= 2:
+                periodo = "Préstamo corto"
+            elif horas >= 3 and horas <= 5:
+                periodo = "Préstamo regular"
+            else:
+                periodo = "Préstamo extendido"
+
+            requiere_autorizacion = False
+
+            if tipo_solicitante == "Estudiante" and equipo == "Cámara":
+                requiere_autorizacion = True
+
+            inicial_nombre = nombre[0]
+            inicial_apellido = apellido[0].lower()
+            ultimos_cedula = cedula[-4:]
+            letras_equipo = equipo[0:3].upper()
+            cantidad_caracteres = len(nombre.replace(
+                " ", "")) + len(apellido.replace(" ", ""))
+
+            codigo_prestamo = inicial_nombre + inicial_apellido + ultimos_cedula + \
+                letras_equipo + str(horas) + str(cantidad_caracteres)
+
+            total_prestamos += 1
+            total_horas += horas
+
+            if tipo_solicitante == "Estudiante":
+                total_estudiantes += 1
+            else:
+                total_docentes += 1
+
+            if equipo == "Laptop":
+                total_laptops += 1
+            elif equipo == "Proyector":
+                total_proyectores += 1
+            elif equipo == "Tablet":
+                total_tablets += 1
+            elif equipo == "Cámara":
+                total_camaras += 1
+
+            if requiere_autorizacion:
+                total_autorizaciones += 1
+
+            ultimo_codigo = codigo_prestamo
+
+            ultimo_prestamo = {
+                "nombre": nombre,
+                "apellido": apellido,
+                "cedula": cedula,
+                "correo": correo,
+                "tipo_solicitante": tipo_solicitante,
+                "equipo": equipo,
+                "codigo_fisico": codigo_fisico,
+                "horas": horas,
+                "periodo": periodo,
+                "codigo_prestamo": codigo_prestamo
+            }
+
+            print("\n--- PRÉSTAMO REGISTRADO CORRECTAMENTE ---")
+            print("Solicitante:", nombre, apellido)
+            print("Cédula:", cedula)
+            print("Correo:", correo)
+            print("Tipo de solicitante:", tipo_solicitante)
+            print("Equipo:", equipo)
+            print("Código físico:", codigo_fisico)
+            print("Horas:", horas)
+            print("Periodo:", periodo)
+            print("Código generado:", codigo_prestamo)
+
+            if tipo_solicitante == "Estudiante" and equipo == "Cámara":
+                print(
+                    "Advertencia: El prestamo de cámmras para "
+                    "estudiantes requiere autorización")
+
+            if horas > 6:
+                print(
+                    "Advertencia: debe ser aprobado por el responsable del laboratorio.")
+
+        case 2:
+            print("\n--- RESUMEN GENERAL DE PRÉSTAMOS ---")
+
+            if total_prestamos == 0:
+                print("No existen préstamos registrados.")
+            else:
+                promedio = total_horas / total_prestamos
+
+                print("Total de préstamos registrados:", total_prestamos)
+                print("Total de préstamos por estudiantes:", total_estudiantes)
+                print("Total de préstamos por docentes:", total_docentes)
+                print("Total de laptops prestadas:", total_laptops)
+                print("Total de proyectores prestados:", total_proyectores)
+                print("Total de tablets prestadas:", total_tablets)
+                print("Total de cámaras prestadas:", total_camaras)
+                print("Total de horas prestadas:", total_horas)
+                print("Préstamos que requieren autorización:",
+                      total_autorizaciones)
+                print("Promedio de horas por préstamo:", round(promedio, 2))
+
+        case 3:
+            print("\n--- ÚLTIMO PRÉSTAMO REGISTRADO ---")
+
+            if total_prestamos == 0:
+                print("No existe ningún préstamo registrado.")
+            else:
+                print("Nombre:", ultimo_prestamo["nombre"])
+                print("Apellido:", ultimo_prestamo["apellido"])
+                print("Cédula:", ultimo_prestamo["cedula"])
+                print("Correo:", ultimo_prestamo["correo"])
+                print("Tipo de solicitante:",
+                      ultimo_prestamo["tipo_solicitante"])
+                print("Equipo:", ultimo_prestamo["equipo"])
+                print("Código físico:", ultimo_prestamo["codigo_fisico"])
+                print("Horas:", ultimo_prestamo["horas"])
+                print("Periodo:", ultimo_prestamo["periodo"])
+                print("Código generado:", ultimo_prestamo["codigo_prestamo"])
+
+        case 4:
+            print("\n--- ANÁLISIS DEL CÓDIGO DE PRÉSTAMO ---")
+
+            if total_prestamos == 0:
+                print("No existe ningún código generado.")
+            else:
+                print("Código completo:", ultimo_codigo)
+                print("Cantidad de caracteres:", len(ultimo_codigo))
+                print("Primer carácter:", ultimo_codigo[0])
+                print("Último carácter:", ultimo_codigo[-1])
+                print("Parte de la cédula:", ultimo_codigo[2:6])
+                print("Parte del equipo:",
+                      ultimo_prestamo["equipo"][0:3].upper())
+                print("Código invertido:", ultimo_codigo[::-1])
+
+                print("Código carácter por carácter:")
+                for caracter in ultimo_codigo:
+                    print(caracter)
+
+        case 5:
+            print("\nGracias por utilizar el sistema.")
+
+        case _:
+            print(
+                "\nError: No es una opción valida, Seleccione una opción del 1 al 5 del menu.")
