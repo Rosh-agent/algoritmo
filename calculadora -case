@@ -1,0 +1,40 @@
+print("\n====Bienvenido a la Calculadora====")
+while True:
+    print("\nSeleccione la operación que desea realizar:")
+    print("1. Suma")
+    print("2. Resta")
+    print("3. Multiplicación")
+    print("4. División")
+    try:
+        opcion = int(input("\nIngrese una opción: "))
+        if opcion < 1 or opcion > 4:
+            print("Opción inválida. Por favor, seleccione una opción válida.")
+
+        elif opcion >= 1 and opcion <= 4:
+            while True:
+                try:
+                    n1 = float(input("Ingrese el primer número: "))
+                    n2 = float(input("Ingrese el segundo número: "))
+                    break
+                except ValueError:
+                    print("Error: Debe ingresar un número válido.")
+                    continue
+
+            match opcion:
+                case 1:
+                    print("\nEl resultado de la suma es:", n1 + n2)
+                case 2:
+                    print("\nEl resultado de la resta es:", n1 - n2)
+                case 3:
+                    print("\nEl resultado de la multiplicación es:", n1 * n2)
+                case 4:
+                    if n2 != 0:
+                        print("\nEl resultado de la división es:", n1 / n2)
+                    else:
+                        print("\nError: No se puede dividir entre cero.")
+                case _:
+                    print("\nOpción inválida.")
+
+            break
+    except ValueError:
+        print("Error: Debe ingresar un número válido.")
